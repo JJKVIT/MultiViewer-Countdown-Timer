@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# Don't ignore the .gitignore file itself
+!.gitignore
+
+# Don't ignore the specified files
+!findElement.js
+!index.html
