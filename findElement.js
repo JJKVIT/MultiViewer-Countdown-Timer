@@ -202,9 +202,9 @@ function getLatest() {
         } else if (itemText === 'Upcoming') {
           console.log('Found "Upcoming" item. Returning data.');
           const timeLeft = timeStringElement ? convertStringToDate(timeStringElement.textContent) : null;
-
+          const title = currentItem.children[1].textContent; // Get the title from the first child
           return {
-            "title": "Upcoming",
+            "title": title,
             "timeLeft": timeLeft // Return the calculated initial time left (Date object)
           };
         }
@@ -296,7 +296,7 @@ async function insertMiddleDiv(el) {
         // Append the link to the inner box
         innerBox.appendChild(liveLink);
         innerBox.style.backgroundColor = 'rgb(225, 6, 0)'; // Red background for live
-      } else if (latestItem.title == 'Upcoming') {
+      } else {
         console.log('Latest item is "Upcoming". Setting up countdown.');
 
         // Function to update the countdown
@@ -305,15 +305,11 @@ async function insertMiddleDiv(el) {
           const distance = latestItem.timeLeft.getTime() - now; // Time left in milliseconds
 
           if (distance < 0) {
-            // Event has started or passed
-            innerBox.textContent = "Event started!";
-            innerBox.style.backgroundColor = 'rgb(225, 6, 0)'; // Red background for event started
             clearInterval(countdownIntervalId); // Stop the countdown
             countdownIntervalId = null;
-            // Optionally, re-run getLatest to see if there's a new "Watch live" or "Upcoming"
-            // setTimeout(() => insertMiddleDiv(el), 1000);
+            insertMiddleDiv(el);
           } else {
-            innerBox.textContent = 'Next Event In: ' + formatCountdown(distance);
+            innerBox.textContent = latestItem.title+': ' + formatCountdown(distance);
             innerBox.style.backgroundColor = 'rgb(48 48 48)'; // Keep dark grey for upcoming
           }
         };
