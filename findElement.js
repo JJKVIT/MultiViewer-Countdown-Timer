@@ -65,7 +65,7 @@ urlChangeObserver.observe(document, { subtree: true, childList: true });
  * @param {string} dateRangeString - The date/time range string (e.g., "Thu, 15 May, 20:00-21:00").
  * @returns {{startDate: Date, endDate: Date} | null} An object containing startDate and endDate Date objects, or null if the input format is invalid.
  */
-function convertTimeRangeStringToDates(dateRangeString) {
+function convertStringToDate(dateRangeString) {
   // Define a mapping from month names to their 0-indexed number (Jan=0, Dec=11)
   const monthMap = {
       "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "Jun": 5,
@@ -74,7 +74,6 @@ function convertTimeRangeStringToDates(dateRangeString) {
 
   // Split the string into three main parts: Weekday, Day Month, Time Range
   const parts = dateRangeString.split(', ');
-
   // Basic format validation (expecting 3 parts)
   if (parts.length !== 3) {
       console.error(`Invalid string format: "${dateRangeString}". Expected "Weekday, Day Month, HH:MM-HH:MM".`);
@@ -90,7 +89,6 @@ function convertTimeRangeStringToDates(dateRangeString) {
   const day = parseInt(dayMonthPart[0], 10);
   const monthStr = dayMonthPart[1]; // e.g., "May"
   const monthIndex = monthMap[monthStr]; // Get the month index (e.g., 4 for May)
-
   // Check if the month name was valid
   if (monthIndex === undefined) {
       console.error(`Invalid month name: "${monthStr}" in "${dateRangeString}".`);
@@ -98,7 +96,7 @@ function convertTimeRangeStringToDates(dateRangeString) {
   }
 
   // --- Parse the Time Range Part (e.g., "20:00-21:00") ---
-  const timeRangePart = parts[2].split('-');
+  const timeRangePart = parts[2].split("–"); // Use the en-dash as the delimiter  
   if (timeRangePart.length !== 2) {
        console.error(`Invalid Time Range format in "${dateRangeString}". Expected "HH:MM-HH:MM".`);
        return null;
@@ -139,8 +137,8 @@ function convertTimeRangeStringToDates(dateRangeString) {
   if (startDate.getTime() <= now.getTime()) {
       return getLatest(); //Calls the function again to get the live event or determine that all events are over
   }
-
-  return now.getTime()-startDate.getTime(); //Returns the time left in milliseconds
+  console.log('Start date ',startDate.getTime()-now.getTime());
+  return startDate.getTime()-now.getTime(); //Returns the time left in milliseconds
 }
 
 /**
@@ -161,10 +159,9 @@ function getLatest() {
     for (let i = 0; i < listItems.length; i++) {
       let currentItem = listItems[i];
       const muiBox = currentItem.querySelector('.MuiBox-root');
-
+      const timeString = currentItem.children[2];
       if (muiBox) {
         const itemText = muiBox.textContent.trim(); 
-
         if (itemText === 'Watch live') {
           console.log('Found "Watch live" item.');
           // Check if the next item is also "Watch live"
@@ -188,10 +185,7 @@ function getLatest() {
           };
         } else if (itemText === 'Upcoming') {
           console.log('Found "Upcoming" item. Returning data.');
-          const timeLeftElement = currentItem.querySelector('.MuiTypography-root');
-          const timeString = timeLeftElement ? timeLeftElement.textContent.trim() : null;
-          
-          const timeLeft = timeString ? convertStringToDate(timeString) : null;
+          const timeLeft = timeString? convertStringToDate(timeString.textContent):null;
 
           return {
             "title" : "Upcoming",
