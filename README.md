@@ -1,7 +1,7 @@
 # **CountDown Timer For _Multiviewer App_**
 
 ## Description
-This is a simple modification that can be added to the multiviewer application that adds a countdown timer to visualize the upcoming events.
+This is a simple modification that can be added to the multiviewer application that adds a countdown timer to visualize the upcoming events. (The functionality when the event turns to live has not been tested)
 
 Link to the [multiviewer application](https://multiviewer.app/)
 
