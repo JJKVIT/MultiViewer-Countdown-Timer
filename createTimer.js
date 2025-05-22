@@ -83,7 +83,7 @@ async function createElement(weekend) {
         newDiv.style.marginLeft = '1rem';
         newDiv.style.backgroundColor = 'rgb(56, 56, 56)';
         newDiv.style.alignItems = 'center';
-        newDiv.style.height = '3.5vh'; 
+        newDiv.style.height = '3.25vh'; 
         newDiv.style.boxShadow = 'rgba(255, 255, 255, 0.4) 0px 0px 0px 1px inset';
         newDiv.style.justifyContent = 'center';
         newDiv.style.alignItems = 'center';
@@ -96,9 +96,21 @@ async function createElement(weekend) {
     }
 }
 
+const innerDivClickHandler = (event) => {
+    event.stopPropagation();
+
+    if (weekendInfo && weekendInfo.link) {
+        window.open(weekendInfo.link);
+    }
+};
+
+
 async function innerElement(weekend){
     console.log("updating element");
     let weekendInfo = await getLatest(weekend);    
+
+    newDiv.style.boxShadow = 'rgba(255, 255, 255, 0.4) 0px 0px 0px 1px inset';
+    newDiv.style.backgroundColor = 'rgb(56, 56, 56)';
 
     let innerDiv = document.querySelector('.timer-div');
     if(innerDiv==null){
@@ -107,38 +119,60 @@ async function innerElement(weekend){
         innerDiv.style.padding = '1vw';
         innerDiv.style.fontSize = '2vh';
         innerDiv.style.fontWeight = 'bold';
+
+        if (newDiv && !newDiv.contains(innerDiv)) {
+             newDiv.appendChild(innerDiv);
+        }
     }
-    
+
+    if(timerInterval!=null){
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
+    innerDiv.removeEventListener('click', innerDivClickHandler);
+
     if(weekendInfo.status == "WATCH LIVE"){
         console.log("Live");
         innerDiv.innerText = "Live: " + weekendInfo.category + " " + weekendInfo.eventName;
         innerDiv.style.color = 'rgb(255, 255, 255)';
         newDiv.style.boxShadow = 'rgba(255, 255, 255, 0) 0px 0px 0px 1px inset';
         newDiv.style.backgroundColor = 'rgb(225, 6, 0)';
-        innerDiv.addEventListener('click', (event)=>{ 
-            event.stopPropagation(); 
-            window.open(weekendInfo.link);
-        });
-    }   
+        innerDiv.addEventListener('click', innerDivClickHandler);
+    }
     else if(weekendInfo.status == "UPCOMING"){
+
+
         const timeObj = convertToDateTime(weekendInfo.timeStr);
-        timerInterval = setInterval(()=>{
-            let currentTime = new Date();
-            let timeLeft = timeObj.getTime() - currentTime.getTime();
-            if(timeLeft<=0){
+
+        if (timeObj === null || isNaN(timeObj.getTime())) {
+             innerDiv.innerText = weekendInfo.category +" "+ weekendInfo.eventName + ": Invalid Time";
+             console.error("Failed to parse upcoming event time:", weekendInfo.timeStr);
+             return; 
+        }
+
+        let timeLeftMillis = timeObj.getTime() - Date.now(); 
+
+        const updateCountdown = () => {
+            if (timeLeftMillis <= 0) {
+                innerDiv.innerText = weekendInfo.category +" "+ weekendInfo.eventName + ": Live!";
                 clearInterval(timerInterval);
                 timerInterval = null;
                 innerElement(weekend);
-                return;
+            } else {
+                innerDiv.innerText = weekendInfo.category +" "+ weekendInfo.eventName + ": " + formatCountdown(timeLeftMillis);
+                timeLeftMillis -= 1000;
             }
-            innerDiv.innerText = weekendInfo.category +" "+ weekendInfo.eventName + ": " + formatCountdown(timeLeft);
-        }, 1000);
+        };
+        timerInterval = setInterval(updateCountdown, 1000); 
     }
     else{
         innerDiv.innerText = weekendInfo.status;
     }
-    
-    newDiv.appendChild(innerDiv);
+
+    if (newDiv && !newDiv.contains(innerDiv)) {
+         newDiv.appendChild(innerDiv);
+    }
 }
 
 function formatCountdown(ms) {
