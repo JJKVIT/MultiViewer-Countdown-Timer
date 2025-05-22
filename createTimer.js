@@ -10,7 +10,6 @@ let timerInterval = null;
 const urlChangeObserver = new MutationObserver(()=>{
     if (lastProcessedUrl !== location.href) {
         tabsChangeObserver.disconnect();
-        console.log("URL changed!");
         if (weekendInterval != null) {
             clearInterval(weekendInterval);
             weekendInterval = null;
@@ -38,7 +37,6 @@ const tabsChangeObserver = new MutationObserver(()=>{
             clearInterval(timerInterval);
             timerInterval = null;
         }
-        console.log("Tabs changed!");
         innerElement(weekend);
         currentTab = tabTitle;
     }
@@ -49,10 +47,8 @@ function findWeekend() {
     if (weekendInterval === null) {
         count = 0;
         weekendInterval = setInterval(()=>{
-            console.log("Checking for weekend element... Attempt:", count); 
             weekend = document.querySelector('.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1.MuiCard-root.css-1wou66g');
             if(weekend!=null || count>=5){ 
-                console.log("Weekend element found!");
                 clearInterval(weekendInterval);
                 weekendInterval = null; 
                 if (weekend != null) {
@@ -81,22 +77,18 @@ async function createElement(weekend) {
 
         newDiv.style.borderRadius = '3px';
         newDiv.style.marginLeft = '1rem';
-        newDiv.style.backgroundColor = 'rgb(56, 56, 56)';
+        newDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
         newDiv.style.alignItems = 'center';
+        newDiv.style.boxShadow = 'rgba(255, 255, 255, 0.4) 0px 0px 0px 1px inset';
         newDiv.style.height = '2.9vh'; 
-        newDiv.style.justifyContent = 'center';
-        newDiv.style.alignItems = 'center';
         newDiv.style.display = 'inline-flex';
-        
-        await innerElement(weekend);
+
         
         cardHeader.appendChild(newDiv);
-        console.log("Custom element created and appended.");
     }
 }
 
 async function innerElement(weekend){
-    console.log("updating element");
     let weekendInfo = await getLatest(weekend);    
 
     let innerDiv = document.querySelector('.timer-div');
@@ -110,8 +102,7 @@ async function innerElement(weekend){
     
     if(weekendInfo.status == "LIVE"){
         innerDiv.innerText = "Live: " + weekendInfo.category + " " + weekendInfo.eventName;
-        innerDiv.style.color = 'rgb(255, 255, 255)';
-        innerDiv.style.backgroundColor = 'rgb(255, 0, 0)';
+        newDiv.style.backgroundColor = 'rgb(255, 0, 0)';
     }   
     else if(weekendInfo.status == "UPCOMING"){
         const timeObj = convertToDateTime(weekendInfo.timeStr);
@@ -156,7 +147,6 @@ async function getLatest(){
                 "status" : statusDiv.children[i].children[3].innerText,
                 "category" : statusDiv.children[i].children[0].innerText
             }
-            console.log(status.status);
             if(status.status == "UPCOMING"){
                 status.timeStr = statusDiv.children[i].children[2].innerText;
                 status.eventName = statusDiv.children[i].children[1].innerText;
