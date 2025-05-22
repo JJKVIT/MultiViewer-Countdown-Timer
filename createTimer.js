@@ -115,8 +115,8 @@ async function innerElement(weekend){
         innerDiv.style.color = 'rgb(255, 255, 255)';
         newDiv.style.boxShadow = 'rgba(255, 255, 255, 0) 0px 0px 0px 1px inset';
         newDiv.style.backgroundColor = 'rgb(225, 6, 0)';
-        innerDiv.addEventListener('click', (event)=>{ // Added event parameter
-            event.stopPropagation(); // Stop the event from propagating
+        innerDiv.addEventListener('click', (event)=>{ 
+            event.stopPropagation(); 
             window.open(weekendInfo.link);
         });
     }   
