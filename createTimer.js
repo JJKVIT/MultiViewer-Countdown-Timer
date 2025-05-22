@@ -10,6 +10,7 @@ let timerInterval = null;
 const urlChangeObserver = new MutationObserver(()=>{
     if (lastProcessedUrl !== location.href) {
         tabsChangeObserver.disconnect();
+        console.log("URL changed!");
         if (weekendInterval != null) {
             clearInterval(weekendInterval);
             weekendInterval = null;
@@ -37,6 +38,7 @@ const tabsChangeObserver = new MutationObserver(()=>{
             clearInterval(timerInterval);
             timerInterval = null;
         }
+        console.log("Tabs changed!");
         innerElement(weekend);
         currentTab = tabTitle;
     }
@@ -47,8 +49,10 @@ function findWeekend() {
     if (weekendInterval === null) {
         count = 0;
         weekendInterval = setInterval(()=>{
+            console.log("Checking for weekend element... Attempt:", count); 
             weekend = document.querySelector('.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1.MuiCard-root.css-1wou66g');
             if(weekend!=null || count>=5){ 
+                console.log("Weekend element found!");
                 clearInterval(weekendInterval);
                 weekendInterval = null; 
                 if (weekend != null) {
@@ -77,18 +81,23 @@ async function createElement(weekend) {
 
         newDiv.style.borderRadius = '3px';
         newDiv.style.marginLeft = '1rem';
-        newDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        newDiv.style.backgroundColor = 'rgb(56, 56, 56)';
         newDiv.style.alignItems = 'center';
+        newDiv.style.height = '3.5vh'; 
         newDiv.style.boxShadow = 'rgba(255, 255, 255, 0.4) 0px 0px 0px 1px inset';
-        newDiv.style.height = '2.9vh'; 
+        newDiv.style.justifyContent = 'center';
+        newDiv.style.alignItems = 'center';
         newDiv.style.display = 'inline-flex';
-
+        
+        await innerElement(weekend);
         
         cardHeader.appendChild(newDiv);
+        console.log("Custom element created and appended.");
     }
 }
 
 async function innerElement(weekend){
+    console.log("updating element");
     let weekendInfo = await getLatest(weekend);    
 
     let innerDiv = document.querySelector('.timer-div');
@@ -96,13 +105,20 @@ async function innerElement(weekend){
         innerDiv = document.createElement('div');
         innerDiv.classList.add('timer-div');
         innerDiv.style.padding = '1vw';
-        innerDiv.style.fontSize = '1.5vh';
+        innerDiv.style.fontSize = '2vh';
         innerDiv.style.fontWeight = 'bold';
     }
     
-    if(weekendInfo.status == "LIVE"){
+    if(weekendInfo.status == "WATCH LIVE"){
+        console.log("Live");
         innerDiv.innerText = "Live: " + weekendInfo.category + " " + weekendInfo.eventName;
-        newDiv.style.backgroundColor = 'rgb(255, 0, 0)';
+        innerDiv.style.color = 'rgb(255, 255, 255)';
+        newDiv.style.boxShadow = 'rgba(255, 255, 255, 0) 0px 0px 0px 1px inset';
+        newDiv.style.backgroundColor = 'rgb(225, 6, 0)';
+        innerDiv.addEventListener('click', (event)=>{ // Added event parameter
+            event.stopPropagation(); // Stop the event from propagating
+            window.open(weekendInfo.link);
+        });
     }   
     else if(weekendInfo.status == "UPCOMING"){
         const timeObj = convertToDateTime(weekendInfo.timeStr);
@@ -147,18 +163,19 @@ async function getLatest(){
                 "status" : statusDiv.children[i].children[3].innerText,
                 "category" : statusDiv.children[i].children[0].innerText
             }
+            console.log(status.status);
             if(status.status == "UPCOMING"){
                 status.timeStr = statusDiv.children[i].children[2].innerText;
                 status.eventName = statusDiv.children[i].children[1].innerText;
 
                 return status;
             }
-            else if(status.status == "Live"){
+            else if(status.status == "WATCH LIVE"){
                 status.eventName = statusDiv.children[i].children[1].innerText;
-                status.link =  statusDiv.children[i].children[3].href;
+                status.link =  statusDiv.children[i].children[3].querySelector('a').href;
 
                 let nextElement = statusDiv.children[i+1]
-                if(nextElement!=null && nextElement.children[3].innerText == "Live"){
+                if(nextElement!=null && nextElement.children[3].innerText == "WATCH LIVE"){
                     status.eventName = nextElement.children[1].innerText;
                     status.link =  nextElement.children[3].href;
                     return status;
