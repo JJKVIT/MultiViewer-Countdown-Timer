@@ -125,11 +125,21 @@ async function innerElement(weekend){
 
 
     if(weekendInfo.status == "WATCH LIVE"){
-        innerDiv.innerHTML = `<a href="${weekendInfo.link}" style="color: rgb(255,255,255); text-decoration: none; cursor: pointer;">LIVE: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+        console.log(weekendInfo.link)
+        innerDiv.innerHTML = `<a href="${weekendInfo.link}" target = "_blank" style="color: rgb(255,255,255); text-decoration: none; cursor: pointer;">LIVE: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
         innerDiv.style.color = 'rgb(255, 255, 255)';
         newDiv.style.boxShadow = 'rgba(255, 255, 255, 0) 0px 0px 0px 1px inset';
         newDiv.style.backgroundColor = 'rgb(244, 67, 54)';
-        newDiv.onclick = function(e) {
+        
+        var anchor = innerDiv.querySelector('a');
+        if(anchor) {
+            anchor.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        }
+
+        innerDiv.onclick = function(e) {
+            e.stopPropagation();
             var anchor = innerDiv.querySelector('a');
             if(anchor) {
                 anchor.click();
@@ -202,7 +212,7 @@ async function getLatest(){
                 let nextElement = statusDiv.children[i+1]
                 if(nextElement!=null && nextElement.children[3].innerText == "WATCH LIVE"){
                     status.eventName = nextElement.children[1].innerText;
-                    status.link =  nextElement.children[3].href;
+                    status.link =  nextElement.children[3].querySelector('a').href;
                     return status;
                 }
 
