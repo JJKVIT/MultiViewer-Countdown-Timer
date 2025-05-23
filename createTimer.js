@@ -83,7 +83,7 @@ async function createElement(weekend) {
         newDiv.style.marginLeft = '1rem';
         newDiv.style.backgroundColor = 'rgb(56, 56, 56)';
         newDiv.style.alignItems = 'center';
-        newDiv.style.height = '3.25vh'; 
+        newDiv.style.height = '2.5vh'; 
         newDiv.style.boxShadow = 'rgba(255, 255, 255, 0.4) 0px 0px 0px 1px inset';
         newDiv.style.justifyContent = 'center';
         newDiv.style.alignItems = 'center';
@@ -96,15 +96,6 @@ async function createElement(weekend) {
     }
 }
 
-const innerDivClickHandler = (event) => {
-    event.stopPropagation();
-
-    if (weekendInfo && weekendInfo.link) {
-        window.open(weekendInfo.link);
-    }
-};
-
-
 async function innerElement(weekend){
     console.log("updating element");
     let weekendInfo = await getLatest(weekend);    
@@ -116,9 +107,11 @@ async function innerElement(weekend){
     if(innerDiv==null){
         innerDiv = document.createElement('div');
         innerDiv.classList.add('timer-div');
-        innerDiv.style.padding = '1vw';
-        innerDiv.style.fontSize = '2vh';
+        innerDiv.style.padding = '0.5vw';
+        innerDiv.style.fontSize = '1.5vh';
         innerDiv.style.fontWeight = 'bold';
+        innerDiv.style.fontFamily = 'Exo 2Variable';
+        innerDiv.style.textTransform = 'uppercase';
 
         if (newDiv && !newDiv.contains(innerDiv)) {
              newDiv.appendChild(innerDiv);
@@ -130,18 +123,20 @@ async function innerElement(weekend){
         timerInterval = null;
     }
 
-    innerDiv.removeEventListener('click', innerDivClickHandler);
 
     if(weekendInfo.status == "WATCH LIVE"){
-        console.log("Live");
-        innerDiv.innerText = "Live: " + weekendInfo.category + " " + weekendInfo.eventName;
+        innerDiv.innerHTML = `<a href="${weekendInfo.link}" style="color: rgb(255,255,255); text-decoration: none; cursor: pointer;">LIVE: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
         innerDiv.style.color = 'rgb(255, 255, 255)';
         newDiv.style.boxShadow = 'rgba(255, 255, 255, 0) 0px 0px 0px 1px inset';
-        newDiv.style.backgroundColor = 'rgb(225, 6, 0)';
-        innerDiv.addEventListener('click', innerDivClickHandler);
+        newDiv.style.backgroundColor = 'rgb(244, 67, 54)';
+        newDiv.onclick = function(e) {
+            var anchor = innerDiv.querySelector('a');
+            if(anchor) {
+                anchor.click();
+            }
+        };
     }
     else if(weekendInfo.status == "UPCOMING"){
-
 
         const timeObj = convertToDateTime(weekendInfo.timeStr);
 
@@ -168,11 +163,7 @@ async function innerElement(weekend){
     }
     else{
         innerDiv.innerText = weekendInfo.status;
-    }
-
-    if (newDiv && !newDiv.contains(innerDiv)) {
-         newDiv.appendChild(innerDiv);
-    }
+    }   
 }
 
 function formatCountdown(ms) {
