@@ -125,10 +125,11 @@ async function innerElement(weekend){
 
 
     if(weekendInfo.status == "WATCH LIVE"){
-        console.log(weekendInfo.link)
-        innerDiv.innerHTML = `<a href="${weekendInfo.link}" target = "_blank" style="color: rgb(255,255,255); text-decoration: none; cursor: pointer;">LIVE: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+        console.log("Live");
+        innerDiv.innerHTML = `<a href="${weekendInfo.link} " target="_blank" style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
         innerDiv.style.color = 'rgb(255, 255, 255)';
         newDiv.style.boxShadow = 'rgba(255, 255, 255, 0) 0px 0px 0px 1px inset';
+        // newDiv.style.on = 'rgb(180, 5, 0)'; 
         newDiv.style.backgroundColor = 'rgb(244, 67, 54)';
         
         var anchor = innerDiv.querySelector('a');
