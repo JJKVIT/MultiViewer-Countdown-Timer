@@ -118,7 +118,7 @@ async function innerElement(weekend){
 
         newDiv.classList.add("Live");
 
-        innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1"?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+        innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.contains(weekendInfo.category)?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
 
         console.log(weekendInfo.div);
         let l = weekendObserver.observe(weekendInfo.div, { subtree: true, childList: true });
@@ -169,18 +169,6 @@ async function innerElement(weekend){
     }   
 }
 
-function formatCountdown(ms) {
-    const seconds = Math.floor((ms / 1000) % 60);
-    const minutes = Math.floor((ms / (1000 * 60)) % 60);
-    const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
-    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
-  
-    const pad = (num) => num < 10 ? '0' + num : num;
-    if(days == 0){
-        return `${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
-    }
-    return `${pad(days)}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
-}
 
 async function getLatest(){
     let statusDiv = weekend.querySelector('.MuiList-root');
@@ -202,7 +190,12 @@ async function getLatest(){
                 status.eventName = statusDiv.children[i].children[1].innerText;
                 status.link =  statusDiv.children[i].children[3].querySelector('a').href;
                 status.div = statusDiv.children[i].children[3];
-
+                
+                // Since pre race and pre quali can be live at the same time as quali / race
+                if(!status.eventName.contains("Pre-")){
+                    return status;
+                }
+                
                 let nextElement = statusDiv.children[i+1]
                 if(nextElement!=null && nextElement.children[3].innerText == "WATCH LIVE"){
                     status.eventName = nextElement.children[1].innerText;
@@ -229,6 +222,18 @@ function convertToDateTime(timeStr){
     const part = (timeStr.split('–')[0]).replaceAll(",","");
     const currentYear = new Date().getFullYear();
     const datetime = new Date(part + " " +currentYear);
-
+    
     return datetime;
+}
+function formatCountdown(ms) {
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / (1000 * 60)) % 60);
+    const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+      
+    const pad = (num) => num < 10 ? '0' + num : num;
+    if(days == 0){
+        return `${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
+    }
+    return `${pad(days)}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
 }
