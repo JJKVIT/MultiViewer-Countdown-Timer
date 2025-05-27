@@ -13,6 +13,7 @@ Link to the [multiviewer application](https://multiviewer.app/)
 > Not %appdata% as that sends you to the roaming file instead of the local file
    
    ![image](https://github.com/user-attachments/assets/33b5f9e9-60a8-465d-8853-6d2b9093156c)
+   
 4. Navigate to the latest app version in the multiviewer folder
    ![image](https://github.com/user-attachments/assets/d180bd99-3669-4970-b76b-741b62355235)
 6. Inside the latest version folder navigate to app-[version number]\resources\app\.webpack\renderer\main_window
