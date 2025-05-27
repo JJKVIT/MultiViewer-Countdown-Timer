@@ -169,7 +169,6 @@ async function innerElement(weekend){
     }   
 }
 
-
 async function getLatest(){
     let statusDiv = weekend.querySelector('.MuiList-root');
 
@@ -191,7 +190,6 @@ async function getLatest(){
                 status.link =  statusDiv.children[i].children[3].querySelector('a').href;
                 status.div = statusDiv.children[i].children[3];
                 
-                // Since pre race and pre quali can be live at the same time as quali / race
                 if(!status.eventName.contains("Pre-")){
                     return status;
                 }
