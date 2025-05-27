@@ -2,14 +2,20 @@
 
 ## Description
 This is a simple (maybe overcomplicated) modification that can be added to the multiviewer application that adds a countdown timer to visualize the upcoming events. (The functionality when the event turns to live has not been tested)
+![image](https://github.com/user-attachments/assets/a6560af6-9b37-4e5f-8f6d-8856133b1201)
 
 Link to the [multiviewer application](https://multiviewer.app/)
 
 ## Installation
 1. Download the index.html file and the createTimer.js file.
-2. Open the folder location for multiviwer shortcut
-3. Open the file location of the shortcut (or directly navigate to appdata folder and open the multiviewer folder)
-4. Open the latest app version folder and navigate to eg(MultiViewerForF1\app-[latest Version]\resources\app\.webpack\renderer\main_window)
-5. Copy the downloaded files into the folder
-6. Open multiviewer and check if the timer is working
-7. Enjoy!
+2. Navigate to appdata folder using 🪟+R and searching %localappdata%
+> [!NOTE]  
+> Not %appdata% as that sends you to the roaming file instead of the local file
+   
+   ![image](https://github.com/user-attachments/assets/33b5f9e9-60a8-465d-8853-6d2b9093156c)
+   
+4. Navigate to the latest app version in the multiviewer folder
+   ![image](https://github.com/user-attachments/assets/d180bd99-3669-4970-b76b-741b62355235)
+6. Inside the latest version folder navigate to app-[version number]\resources\app\.webpack\renderer\main_window
+7. Copy paste the index.html and the createTimer.js file
+8. Open multiviewer and enjoy 👍
