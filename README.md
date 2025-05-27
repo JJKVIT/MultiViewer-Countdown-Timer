@@ -2,6 +2,7 @@
 
 ## Description
 This is a simple (maybe overcomplicated) modification that can be added to the multiviewer application that adds a countdown timer to visualize the upcoming events. (The functionality when the event turns to live has not been tested)
+![image](https://github.com/user-attachments/assets/a6560af6-9b37-4e5f-8f6d-8856133b1201)
 
 Link to the [multiviewer application](https://multiviewer.app/)
 
