@@ -8,7 +8,9 @@ Link to the [multiviewer application](https://multiviewer.app/)
 
 ## Installation
 1. Download the index.html file and the createTimer.js file.
-2. Navigate to appdata folder using 🪟+R and searching %localappdata% [!NOTE] (Note: not %appdata% since it opens the .roaming folder)
+2. Navigate to appdata folder using 🪟+R and searching %localappdata%
+   > [!NOTE]
+   > Not %appdata% since it opens the .roaming folder
    
    ![image](https://github.com/user-attachments/assets/33b5f9e9-60a8-465d-8853-6d2b9093156c)
 4. Navigate to the latest app version in the multiviewer folder
