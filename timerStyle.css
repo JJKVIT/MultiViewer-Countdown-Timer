@@ -8,16 +8,17 @@
     justify-content: center;
     display: inline-flex;
 }
-.timerDivLive{
+.timerDiv.Live{
     border-radius: 3px;
     margin-left: 1rem;
     background-color: rgb(244, 67, 54);
     align-items: center;
-    height: 2.5vh;
+    height: 2.8vh;
+    box-shadow: rgba(255, 255, 255, 0.0) 0px 0px 0px 1px inset;
     justify-content: center;
     display: inline-flex;
 }
-.timerDivLive:hover{
+.timerDiv.Live:hover{
     background-color: rgb(255, 17, 0);
 }
 .timer-div {

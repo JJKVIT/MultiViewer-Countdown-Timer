@@ -47,12 +47,8 @@ document.addEventListener('DOMContentLoaded',()=>{
         }
     });
     
-    const weekendObserver = new MutationObserver((statusDiv)=>{
+    const weekendObserver = new MutationObserver(()=>{
         console.log("Weekend element changed!");
-        if(statusDiv.innerText == "WATCH REPLAY" ){
-            console.log("time left null");
-            innerElement(weekend);
-        }
     });
     
     function findWeekend() {
@@ -122,38 +118,50 @@ document.addEventListener('DOMContentLoaded',()=>{
     
         if(weekendInfo.status == "WATCH LIVE"){
             console.log("Live");
-    
-            newDiv.classList.add("Live");
-    
-            innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.contains(weekendInfo.category)?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
-    
-            setTimeout(()=>{
-                console.log(weekendInfo.statusDiv);
-                let l = weekendObserver.observe(weekendInfo.statusDiv, { subtree: true, childList: true }, weekendInfo.statusDiv);
-                console.log("l: ",l);
-
-                if(weekendInfo.statusDiv.innerText == "WATCH REPLAY" ){
-                    weekendObserver.disconnect();
-                    console.log("time left null");
-                    innerElement(weekend);
-                }
-
-            }, weekendInfo.timeLeft);
             
-            var anchor = innerDiv.querySelector('a');
-            if(anchor) {
-                anchor.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                });
-            }
-    
-            innerDiv.onclick = function(e) {
-                e.stopPropagation();
+            if(weekendInfo.link != null){
+                newDiv.classList.add("Live");
+        
+                innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.includes(weekendInfo.category)?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+                
+                console.log("time left: ",weekendInfo.timeLeft);
+                if(weekendInfo.timeLeft > 0){
+                    setTimeout(()=>{
+                        console.log(weekendInfo.div);
+                        let l = weekendObserver.observe(weekendInfo.div, { subtree: true, childList: true }, weekendInfo.div);
+                        console.log("l: ",l);
+        
+                        if(weekendInfo.div.innerText == "WATCH REPLAY" ){
+                            weekendObserver.disconnect();
+                            console.log("time left null");
+                            innerElement(weekend);
+                        }
+        
+                    }, weekendInfo.timeLeft);
+                }
+                else{
+                    console.log("time left 0");
+                    console.log(weekendInfo.div);
+                    let l = weekendObserver.observe(weekendInfo.div, { subtree: true, childList: true }, weekendInfo.div);
+                    console.log("l: ",l);
+                }
+                console.log("timeoutset");
+                
                 var anchor = innerDiv.querySelector('a');
                 if(anchor) {
-                    anchor.click();
+                    anchor.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                    });
                 }
-            };
+        
+                innerDiv.onclick = function(e) {
+                    e.stopPropagation();
+                    var anchor = innerDiv.querySelector('a');
+                    if(anchor) {
+                        anchor.click();
+                    }
+                };
+            }
             
         }
         else if(weekendInfo.status == "UPCOMING"){
@@ -199,13 +207,13 @@ document.addEventListener('DOMContentLoaded',()=>{
                 const categoryText = child.children[0].innerText;
                 const eventNameText = child.children[1].innerText;
                 const statusText = child.children[3].innerText;
-                const childStatusDiv = child.children[3];
+                const childStatusDiv = child.children[3].querySelector('.MuiButtonBase-root');
     
                 const status = {
                     "status": statusText,
                     "category": categoryText,
                     "eventName": eventNameText,
-                    "statusDiv": childStatusDiv
+                    "div": childStatusDiv
                 };
                 
                 console.log(status.status);
@@ -268,9 +276,16 @@ function formatCountdown(ms) {
 
 function getTimeRemaining(timeStr){
     const endStr = (timeStr.split('–')[1]).replace(/,/g, "");
-    const date = (((new Date(endStr)).setDate(Date.now().getDate())).setMonth(Date.now().getMonth())).setFullYear(Date.now().getFullYear());
+    const now = new Date();
+    const endDate = new Date(endStr);
 
-    return (date.getTime() - (Date.now()).getTime());
+    endDate.setDate(now.getDate());
+    endDate.setMonth(now.getMonth());
+    endDate.setFullYear(now.getFullYear());
+
+    const endTime = endDate.getTime();
+
+    return (endTime - now.getTime());
 }
 
 /*
