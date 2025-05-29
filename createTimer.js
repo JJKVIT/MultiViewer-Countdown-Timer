@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     
     async function innerElement(weekend){
         console.log("updating element");
-        let weekendInfo = await getLatest(weekend);    
+        let weekendInfo = await getLatest(weekend); 
     
         let innerDiv = newDiv ? newDiv.querySelector('.timer-div') : null; 
         if(!innerDiv){
@@ -122,10 +122,27 @@ document.addEventListener('DOMContentLoaded',()=>{
     
         if(weekendInfo.status == "WATCH LIVE"){
             console.log("Live");
-    
-            newDiv.classList.add("Live");
-    
-            innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.contains(weekendInfo.category)?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+            if(weekendInfo.link != null){
+                newDiv.classList.add("Live");
+                innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.contains(weekendInfo.category)?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+                var anchor = innerDiv.querySelector('a');
+                if(anchor) {
+                    anchor.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                    });
+                }
+        
+                innerDiv.onclick = function(e) {
+                    e.stopPropagation();
+                    var anchor = innerDiv.querySelector('a');
+                    if(anchor) {
+                        anchor.click();
+                    }
+                };
+            }
+            else{
+                innerDiv.innerText = weekendInfo.category +" "+ weekendInfo.eventName + ": viewable after the session";
+            }
     
             setTimeout(()=>{
                 console.log(weekendInfo.statusDiv);
@@ -140,20 +157,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 
             }, weekendInfo.timeLeft);
             
-            var anchor = innerDiv.querySelector('a');
-            if(anchor) {
-                anchor.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                });
-            }
-    
-            innerDiv.onclick = function(e) {
-                e.stopPropagation();
-                var anchor = innerDiv.querySelector('a');
-                if(anchor) {
-                    anchor.click();
-                }
-            };
             
         }
         else if(weekendInfo.status == "UPCOMING"){
@@ -169,7 +172,7 @@ document.addEventListener('DOMContentLoaded',()=>{
             let timeLeftMillis = timeObj.getTime() - Date.now(); 
     
             const updateCountdown = () => {
-                if (timeLeftMillis <= 0) {
+                if (timeLeftMillis <= 0 ) {
                     innerDiv.innerText = weekendInfo.category +" "+ weekendInfo.eventName + ": Live!";
                     clearInterval(timerInterval);
                     timerInterval = null;
@@ -180,6 +183,8 @@ document.addEventListener('DOMContentLoaded',()=>{
                 }
             };
             timerInterval = setInterval(updateCountdown, 1000); 
+
+
         }
         else{
             innerDiv.innerText = weekendInfo.status;
@@ -211,6 +216,14 @@ document.addEventListener('DOMContentLoaded',()=>{
                 console.log(status.status);
                 if(status.status === "UPCOMING"){
                     status.timeStr = child.children[2].innerText;
+                    if(status.eventName === "Weekend Warm-Up"){
+                        const timeLeft = convertToDateTime(status.timeStr)-Date.now(); 
+                        if(timeLeft <= 0){
+                            status.timeLeft = getTimeRemaining(status.timeStr);
+                            status.link = null;                   
+                            status.status = "WATCH LIVE";
+                        }
+                    }
                     return status;
                 }
                 else if(status.status === "WATCH LIVE"){
@@ -268,9 +281,16 @@ function formatCountdown(ms) {
 
 function getTimeRemaining(timeStr){
     const endStr = (timeStr.split('–')[1]).replace(/,/g, "");
-    const date = (((new Date(endStr)).setDate(Date.now().getDate())).setMonth(Date.now().getMonth())).setFullYear(Date.now().getFullYear());
+    const now = new Date();
+    const endDate = new Date(endStr);
 
-    return (date.getTime() - (Date.now()).getTime());
+    endDate.setDate(now.getDate());
+    endDate.setMonth(now.getMonth());
+    endDate.setFullYear(now.getFullYear());
+
+    const endTime = endDate.getTime();
+
+    return (endTime - now.getTime());
 }
 
 /*
