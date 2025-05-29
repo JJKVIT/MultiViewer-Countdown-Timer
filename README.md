@@ -19,3 +19,5 @@ Link to the [multiviewer application](https://multiviewer.app/)
 6. Inside the latest version folder navigate to app-[version number]\resources\app\.webpack\renderer\main_window
 7. Copy paste the index.html and the createTimer.js file
 8. Open multiviewer and enjoy 👍
+> [!NOTE]  
+> It currently only works when the time is set to 24hrs not 12hrs, may add that later
