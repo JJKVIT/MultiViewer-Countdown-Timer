@@ -17,6 +17,7 @@
     box-shadow: rgba(255, 255, 255, 0.0) 0px 0px 0px 1px inset;
     justify-content: center;
     display: inline-flex;
+    transition: 0.5s;
 }
 .timerDiv.Live:hover{
     background-color: rgb(255, 17, 0);

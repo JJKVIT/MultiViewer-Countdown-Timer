@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     
     const weekendObserver = new MutationObserver(()=>{
         console.log("Weekend element changed!");
+        innerElement(weekend);
     });
     
     function findWeekend() {
@@ -122,28 +123,20 @@ document.addEventListener('DOMContentLoaded',()=>{
             if(weekendInfo.link != null){
                 newDiv.classList.add("Live");
         
-                innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.includes(weekendInfo.category)?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+                innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.includes("Pre" || "Post")?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
                 
                 console.log("time left: ",weekendInfo.timeLeft);
                 if(weekendInfo.timeLeft > 0){
                     setTimeout(()=>{
-                        console.log(weekendInfo.div);
-                        let l = weekendObserver.observe(weekendInfo.div, { subtree: true, childList: true }, weekendInfo.div);
-                        console.log("l: ",l);
-        
-                        if(weekendInfo.div.innerText == "WATCH REPLAY" ){
-                            weekendObserver.disconnect();
-                            console.log("time left null");
-                            innerElement(weekend);
-                        }
+                        console.log("observer set",weekend.querySelector('.MuiList-root.css-1uzmcsd'));
+                        weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), { subtree: true, childList: true });
+    
         
                     }, weekendInfo.timeLeft);
                 }
                 else{
-                    console.log("time left 0");
-                    console.log(weekendInfo.div);
-                    let l = weekendObserver.observe(weekendInfo.div, { subtree: true, childList: true }, weekendInfo.div);
-                    console.log("l: ",l);
+                    console.log("observer set",weekend.querySelector('.MuiList-root.css-1uzmcsd'));
+                    weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), { subtree: true, childList: true });
                 }
                 console.log("timeoutset");
                 
@@ -207,13 +200,11 @@ document.addEventListener('DOMContentLoaded',()=>{
                 const categoryText = child.children[0].innerText;
                 const eventNameText = child.children[1].innerText;
                 const statusText = child.children[3].innerText;
-                const childStatusDiv = child.children[3].querySelector('.MuiButtonBase-root');
     
                 const status = {
                     "status": statusText,
                     "category": categoryText,
                     "eventName": eventNameText,
-                    "div": childStatusDiv
                 };
                 
                 console.log(status.status);
@@ -224,23 +215,19 @@ document.addEventListener('DOMContentLoaded',()=>{
                 else if(status.status === "WATCH LIVE"){
                     const anchor = child.children[3].querySelector('a');
                     status.link = anchor?anchor.href:null;
-                    
-                    if(!status.eventName.includes("Pre-")){
-                        status.timeLeft = getTimeRemaining(child.children[2].innerText);
-                        return status;
-                    }
-                    
-                    const nextElement = statusDiv.children[i+1];
-                    if(nextElement && nextElement.children.length > 3 && nextElement.children[3].innerText === "WATCH LIVE"){
+                    status.timeLeft = getTimeRemaining(child.children[2].innerText);
+
+                    i++
+                    let nextElement = statusDiv.children[i];
+                    while(nextElement && nextElement.children[3].innerText === "WATCH LIVE"){
+                        status.category = nextElement.children[0].innerText;
                         status.eventName = nextElement.children[1].innerText;
                         const nextAnchor = nextElement.children[3].querySelector('a');
                         status.link = nextAnchor?nextAnchor.href:null;
                         status.timeLeft = getTimeRemaining(nextElement.children[2].innerText);
-                        
-                        return status;
+                        i++;
+                        nextElement = statusDiv.children[i];
                     }
-                    
-                    status.timeLeft = getTimeRemaining(child.children[2].innerText);
                     return status;
                 }
             }
@@ -275,17 +262,14 @@ function formatCountdown(ms) {
 }
 
 function getTimeRemaining(timeStr){
-    const endStr = (timeStr.split('–')[1]).replace(/,/g, "");
+    const endStr = (timeStr.split('–')[1]);
     const now = new Date();
-    const endDate = new Date(endStr);
 
+    const endDate = new Date(endStr +" " + now.getFullYear());
     endDate.setDate(now.getDate());
-    endDate.setMonth(now.getMonth());
-    endDate.setFullYear(now.getFullYear());
+    endDate.setMonth(new Date().getMonth());
 
-    const endTime = endDate.getTime();
-
-    return (endTime - now.getTime());
+    return (endDate.getTime() - now.getTime());
 }
 
 /*
