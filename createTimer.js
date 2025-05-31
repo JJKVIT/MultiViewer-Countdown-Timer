@@ -129,14 +129,14 @@ document.addEventListener('DOMContentLoaded',()=>{
                 if(weekendInfo.timeLeft > 0){
                     setTimeout(()=>{
                         console.log("observer set",weekend.querySelector('.MuiList-root.css-1uzmcsd'));
-                        weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), { subtree: true, childList: true });
+                        weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), {characterData: true, attributes: false, subtree: true, childList: true });
     
         
                     }, weekendInfo.timeLeft);
                 }
                 else{
                     console.log("observer set",weekend.querySelector('.MuiList-root.css-1uzmcsd'));
-                    weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), { subtree: true, childList: true });
+                    weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), {characterData: true, attributes: false, subtree: true, childList: true });
                 }
                 console.log("timeoutset");
                 
