@@ -81,10 +81,40 @@ document.addEventListener('DOMContentLoaded',()=>{
     
     async function createElement(weekend) {
         cardHeader = weekend.querySelector('.MuiCardHeader-content');
-    
+
+        let topEle = document.querySelector(".MuiPaper-root");
+        let topEleheight = topEle.offsetHeight;
+
+        let stickyElem = document.querySelector(".MuiButtonBase-root.MuiCardActionArea-root.css-147p5fy");
+        stickyElem.style.backgroundColor = 'rgb(32,28,28)';
+
+
+        let initialStickyPos = stickyElem.getBoundingClientRect().top + window.pageYOffset;
+        console.log("initialStickyPos: ", initialStickyPos);
+
+        let width = stickyElem.offsetWidth;
+        console.log("width: ", width);
+
+        window.onscroll = function () {
+            let currentScrollPos = window.pageYOffset;
+
+            if (currentScrollPos > initialStickyPos) {
+                console.log("sticky");
+                stickyElem.style.position = "fixed";
+                stickyElem.style.top = topEleheight+'px';
+                stickyElem.style.zIndex = '1000'; 
+                stickyElem.style.width = width+'px';
+                stickyElem.style.borderBottomLeftRadius = '5px';
+                stickyElem.style.borderBottomRightRadius = '5px';
+            } else {
+                stickyElem.style.position = "relative"; 
+                stickyElem.style.top = "auto";
+            }
+        }
+
         if (cardHeader && !cardHeader.querySelector('.timerDiv')) { 
             cardHeader.style.display = 'flex';
-            cardHeader.style.alignItems = 'center';
+            cardHeader.style.position = 'sticky';
     
             newDiv = document.createElement('div');
             newDiv.classList.add('timerDiv'); 
@@ -129,14 +159,14 @@ document.addEventListener('DOMContentLoaded',()=>{
                 if(weekendInfo.timeLeft > 0){
                     setTimeout(()=>{
                         console.log("observer set",weekend.querySelector('.MuiList-root.css-1uzmcsd'));
-                        weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), {characterData: true, attributes: false, subtree: true, childList: true });
+                        weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), {characterData: true, attributes: true, subtree: true, childList: true });
     
         
                     }, weekendInfo.timeLeft);
                 }
                 else{
                     console.log("observer set",weekend.querySelector('.MuiList-root.css-1uzmcsd'));
-                    weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), {characterData: true, attributes: false, subtree: true, childList: true });
+                    weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), {characterData: true, attributes: true, subtree: true, childList: true });
                 }
                 console.log("timeoutset");
                 
@@ -235,6 +265,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         }
         return { "status": "Error Loading Data" };
     }
+
 })
 
 function convertToDateTime(timeStr){
