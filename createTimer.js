@@ -152,8 +152,25 @@ document.addEventListener('DOMContentLoaded',()=>{
             
             if(weekendInfo.link != null){
                 newDiv.classList.add("Live");
-        
-                innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.includes("Pre" || "Post")?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+                let timeObj = convertToDateTime(weekendInfo.timeToStart);
+                let timeLeftMillis = timeObj.getTime() - Date.now(); 
+
+                if(timeLeftMillis > 0){
+                    const updateCountdown = () => {
+                        if (timeLeftMillis <= 0) {
+                            clearInterval(timerInterval);
+                            timerInterval = null;
+                            innerElement(weekend);
+                        } else {
+                            innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.includes("Pre" || "Post")?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live in ${formatCountdown(timeLeftMillis)} : ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+                            timeLeftMillis -= 1000;
+                        }
+                    };
+                    timerInterval = setInterval(updateCountdown, 1000); 
+                }
+                else{
+                    innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.includes("Pre" || "Post")?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+                }
                 
                 console.log("time left: ",weekendInfo.timeLeft);
                 if(weekendInfo.timeLeft > 0){
@@ -246,6 +263,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                     const anchor = child.children[3].querySelector('a');
                     status.link = anchor?anchor.href:null;
                     status.timeLeft = getTimeRemaining(child.children[2].innerText);
+                    status.timeToStart = child.children[2].innerText;
 
                     i++
                     let nextElement = statusDiv.children[i];
