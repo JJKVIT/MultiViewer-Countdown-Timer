@@ -86,24 +86,25 @@ document.addEventListener('DOMContentLoaded',()=>{
         let topEleheight = topEle.offsetHeight;
 
         let stickyElem = document.querySelector(".MuiButtonBase-root.MuiCardActionArea-root.css-147p5fy");
-        stickyElem.style.backgroundColor = 'rgb(32,28,28)';
-
+        stickyElem.style.backgroundColor = 'rgb(30, 30, 30)';
 
         let initialStickyPos = stickyElem.getBoundingClientRect().top + window.pageYOffset;
         console.log("initialStickyPos: ", initialStickyPos);
-
-        let width = stickyElem.offsetWidth;
-        console.log("width: ", width);
-
+        let box = document.querySelector('.MuiCollapse-root.MuiCollapse-vertical.MuiCollapse-entered.css-c4sutr')
+        let width = box.offsetWidth;
+        stickyElem.style.width = width+'px';
+        window.onresize = function(){
+            width = box.offsetWidth;
+            stickyElem.style.width = width+'px';
+        }
         window.onscroll = function () {
+
             let currentScrollPos = window.pageYOffset;
 
             if (currentScrollPos > initialStickyPos) {
-                console.log("sticky");
                 stickyElem.style.position = "fixed";
                 stickyElem.style.top = topEleheight+'px';
                 stickyElem.style.zIndex = '1000'; 
-                stickyElem.style.width = width+'px';
                 stickyElem.style.borderBottomLeftRadius = '5px';
                 stickyElem.style.borderBottomRightRadius = '5px';
             } else {
@@ -207,6 +208,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         else if(weekendInfo.status == "UPCOMING"){
     
             const timeObj = convertToDateTime(weekendInfo.timeStr);
+            weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), {characterData: true, attributes: true, subtree: true, childList: true });
     
             if (timeObj === null || isNaN(timeObj.getTime())) {
                  innerDiv.innerText = weekendInfo.category +" "+ weekendInfo.eventName + ": Invalid Time";
