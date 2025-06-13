@@ -1,7 +1,7 @@
 # **CountDown Timer For _Multiviewer App_**
 
 ## Description
-This is a simple (maybe overcomplicated) modification that can be added to the multiviewer application that adds a countdown timer to visualize the upcoming events. (The functionality when the event turns to live has not been tested)
+This is a simple (100% overcomplicated) modification that can be added to the multiviewer application that adds a countdown timer to visualize the upcoming events with a live button to access the live events. It also makes the weekend elements header sticky so as you scroll you can still see the timer or live button.
 ![image](https://github.com/user-attachments/assets/a6560af6-9b37-4e5f-8f6d-8856133b1201)
 
 Link to the [multiviewer application](https://multiviewer.app/)
@@ -20,4 +20,4 @@ Link to the [multiviewer application](https://multiviewer.app/)
 7. Copy paste the index.html and the createTimer.js file
 8. Open multiviewer and enjoy 👍
 > [!NOTE]  
-> It currently only works when the time is set to 24hrs not 12hrs, may add that later
+> It currently only works when the time is set to 24hrs not 12hrs, may i'll add that later
