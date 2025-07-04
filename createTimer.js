@@ -152,10 +152,11 @@ document.addEventListener('DOMContentLoaded',()=>{
             console.log("Live");
             
             if(weekendInfo.link != null){
+                innerAnchor = document.createElement('a');
                 newDiv.classList.add("Live");
                 let timeObj = convertToDateTime(weekendInfo.timeToStart);
                 let timeLeftMillis = timeObj.getTime() - Date.now(); 
-
+                
                 if(timeLeftMillis > 0){
                     const updateCountdown = () => {
                         if (timeLeftMillis <= 0) {
@@ -163,16 +164,38 @@ document.addEventListener('DOMContentLoaded',()=>{
                             timerInterval = null;
                             innerElement(weekend);
                         } else {
-                            innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.includes("Pre" || "Post")?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live in ${formatCountdown(timeLeftMillis)} : ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+                            innerAnchor.setAttribute("href",weekendInfo.link);
+                            innerAnchor.textContent = `Live in ${formatCountdown(timeLeftMillis)} : ${weekendInfo.category} ${weekendInfo.eventName}`;
+                            if(weekendInfo.category != "F1" || weekendInfo.eventName.includes("Pre" || "Post")){
+                                innerAnchor.setAttribute("target","_blank");
+                            }
+                            innerDiv.appendChild(innerAnchor);
                             timeLeftMillis -= 1000;
                         }
                     };
                     timerInterval = setInterval(updateCountdown, 1000); 
                 }
                 else{
-                    innerDiv.innerHTML = `<a href="${weekendInfo.link} " ${weekendInfo.category != "F1" || weekendInfo.eventName.includes("Pre" || "Post")?'target="_blank"':""} style="color: rgb(255,255,255); text-decoration: none; cursor: pointer">Live: ${weekendInfo.category} ${weekendInfo.eventName}</a>`;
+                    innerElement.setAttribute("href",weekendInfo.link);
+                    innerAnchor.textContent = `Live: ${weekendInfo.category} ${weekendInfo.eventName}`;
+                    if(weekendInfo.category != "F1" || weekendInfo.eventName.includes("Pre" || "Post")){
+                        innerAnchor.setAttribute("target","_blank");
+                    }
                 }
                 
+                innerAnchor.addEventListener('click', function(event) {
+                    event.stopPropagation(); 
+                    console.log('Anchor clicked, propagation stopped.');
+                });
+                
+                innerDiv.onclick = function(e) {
+                    e.stopPropagation();
+                    var anchor = innerDiv.querySelector('a');
+                    if(anchor) {
+                        anchor.click();
+                    }
+                };
+
                 console.log("time left: ",weekendInfo.timeLeft);
                 if(weekendInfo.timeLeft > 0){
                     setTimeout(()=>{
@@ -188,20 +211,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 }
                 console.log("timeoutset");
                 
-                var anchor = innerDiv.querySelector('a');
-                if(anchor) {
-                    anchor.addEventListener('click', function(event) {
-                        event.stopPropagation();
-                    });
-                }
         
-                innerDiv.onclick = function(e) {
-                    e.stopPropagation();
-                    var anchor = innerDiv.querySelector('a');
-                    if(anchor) {
-                        anchor.click();
-                    }
-                };
             }
             
         }
@@ -285,7 +295,6 @@ document.addEventListener('DOMContentLoaded',()=>{
         }
         return { "status": "Error Loading Data" };
     }
-
 })
 
 function convertToDateTime(timeStr){
