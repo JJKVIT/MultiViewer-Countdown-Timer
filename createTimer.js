@@ -152,11 +152,18 @@ document.addEventListener('DOMContentLoaded',()=>{
             console.log("Live");
             
             if(weekendInfo.link != null){
-                innerAnchor = document.createElement('a');
                 newDiv.classList.add("Live");
                 let timeObj = convertToDateTime(weekendInfo.timeToStart);
                 let timeLeftMillis = timeObj.getTime() - Date.now(); 
-                
+                innerAnchor = innerDiv.querySelector('a');
+                if(!innerAnchor){
+                    innerAnchor = document.createElement('a');
+                    innerAnchor.addEventListener('click', function(event) {
+                            console.log("fiding");
+                            event.stopPropagation();
+                    });
+                }
+                innerAnchor.setAttribute('target','_blank');
                 if(timeLeftMillis > 0){
                     const updateCountdown = () => {
                         if (timeLeftMillis <= 0) {
@@ -164,44 +171,44 @@ document.addEventListener('DOMContentLoaded',()=>{
                             timerInterval = null;
                             innerElement(weekend);
                         } else {
-                            innerAnchor.setAttribute("href",weekendInfo.link);
-                            innerAnchor.textContent = `Live in ${formatCountdown(timeLeftMillis)} : ${weekendInfo.category} ${weekendInfo.eventName}`;
-                            if(weekendInfo.category != "F1" || weekendInfo.eventName.includes("Pre" || "Post")){
-                                innerAnchor.setAttribute("target","_blank");
-                            }
-                            innerDiv.appendChild(innerAnchor);
+                            innerAnchor.textContent = `Live in ${formatCountdown(timeLeftMillis)} : ${weekendInfo.category} ${weekendInfo.eventName}`
+                            innerAnchor.setAttribute('href',weekendInfo.link)
                             timeLeftMillis -= 1000;
                         }
                     };
                     timerInterval = setInterval(updateCountdown, 1000); 
                 }
                 else{
-                    innerElement.setAttribute("href",weekendInfo.link);
-                    innerAnchor.textContent = `Live: ${weekendInfo.category} ${weekendInfo.eventName}`;
-                    if(weekendInfo.category != "F1" || weekendInfo.eventName.includes("Pre" || "Post")){
-                        innerAnchor.setAttribute("target","_blank");
-                    }
+                    innerAnchor.textContent = `Live: ${weekendInfo.category} ${weekendInfo.eventName}`
+                    innerAnchor.setAttribute('href',weekendInfo.link)
                 }
+                if(weekendInfo.category == "F1" && !(weekendInfo.eventName.includes("Pre" || "Post"))){
+                    innerAnchor.setAttribute('target','');
+                }
+                innerDiv.appendChild(innerAnchor);
                 
-                innerAnchor.addEventListener('click', function(event) {
-                    event.stopPropagation(); 
-                    console.log('Anchor clicked, propagation stopped.');
-                });
-                
-                innerDiv.onclick = function(e) {
+                var anchor = innerDiv.querySelector('a');
+                console.log(innerAnchor)
+                if(anchor) {
+                    anchor.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                    });
+                }
+        
+                innerDiv.onclick = function(e) {m
                     e.stopPropagation();
                     var anchor = innerDiv.querySelector('a');
                     if(anchor) {
                         anchor.click();
                     }
                 };
-
+                
                 console.log("time left: ",weekendInfo.timeLeft);
                 if(weekendInfo.timeLeft > 0){
                     setTimeout(()=>{
                         console.log("observer set",weekend.querySelector('.MuiList-root.css-1uzmcsd'));
                         weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), {characterData: true, attributes: true, subtree: true, childList: true });
-    
+
         
                     }, weekendInfo.timeLeft);
                 }
@@ -210,8 +217,6 @@ document.addEventListener('DOMContentLoaded',()=>{
                     weekendObserver.observe(weekend.querySelector('.MuiList-root.css-1uzmcsd'), {characterData: true, attributes: true, subtree: true, childList: true });
                 }
                 console.log("timeoutset");
-                
-        
             }
             
         }
@@ -295,6 +300,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         }
         return { "status": "Error Loading Data" };
     }
+
 })
 
 function convertToDateTime(timeStr){
