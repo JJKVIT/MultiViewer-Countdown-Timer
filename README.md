@@ -1,7 +1,7 @@
 # **CountDown Timer For _Multiviewer App_**
 
 ## Description
-This is a simple (100% overcomplicated) modification that can be added to the multiviewer application that adds a countdown timer to visualize the upcoming events with a live button to access the live events. It also makes the weekend elements header sticky so as you scroll you can still see the timer or live button.
+This is a simple (100% overcomplicated and the worst implementation possible for this) modification that can be added to the multiviewer application that adds a countdown timer to visualize the upcoming events with a live button to access the live events. It also makes the weekend elements header sticky so as you scroll you can still see the timer or live button.
 ![image](https://github.com/user-attachments/assets/a6560af6-9b37-4e5f-8f6d-8856133b1201)
 > [!NOTE]  
 >There are some issues still, try refreshing if theres any issues regarding the timer or live button not working, or if it is displaying incorrect information.
