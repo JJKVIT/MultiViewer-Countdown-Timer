@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 if(!innerAnchor){
                     innerAnchor = document.createElement('a');
                     innerAnchor.addEventListener('click', function(event) {
-                            console.log("fiding");
+                            console.log("finding");
                             event.stopPropagation();
                     });
                 }
@@ -185,15 +185,16 @@ document.addEventListener('DOMContentLoaded',()=>{
                 if(weekendInfo.category == "F1" && !(weekendInfo.eventName.includes("Pre" || "Post"))){
                     innerAnchor.setAttribute('target','');
                 }
+                innerDiv.htmlContent = "";
                 innerDiv.appendChild(innerAnchor);
                 
-                var anchor = innerDiv.querySelector('a');
-                console.log(innerAnchor)
-                if(anchor) {
-                    anchor.addEventListener('click', function(event) {
-                        event.stopPropagation();
-                    });
-                }
+                // var anchor = innerDiv.querySelector('a');
+                // console.log(innerAnchor)
+                // if(anchor) {
+                //     anchor.addEventListener('click', function(event) {
+                //         event.stopPropagation();
+                //     });
+                // }
         
                 innerDiv.onclick = function(e) {m
                     e.stopPropagation();
