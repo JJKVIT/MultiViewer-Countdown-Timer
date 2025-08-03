@@ -187,15 +187,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 }
                 innerDiv.innerText = "";
                 innerDiv.appendChild(innerAnchor);
-                
-                // var anchor = innerDiv.querySelector('a');
-                // console.log(innerAnchor)
-                // if(anchor) {
-                //     anchor.addEventListener('click', function(event) {
-                //         event.stopPropagation();
-                //     });
-                // }
-        
+            
                 innerDiv.onclick = function(e) {m
                     e.stopPropagation();
                     var anchor = innerDiv.querySelector('a');
@@ -338,7 +330,3 @@ function getTimeRemaining(timeStr){
 
     return (endDate.getTime() - now.getTime());
 }
-
-/*
-MuiCircularProgress-root MuiCircularProgress-indeterminate MuiCircularProgress-colorPrimary css-n9w9ys => loading bar maybe check if this is no longer in the doc instead
-*/
