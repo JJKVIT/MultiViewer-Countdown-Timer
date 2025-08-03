@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 if(weekendInfo.category == "F1" && !(weekendInfo.eventName.includes("Pre" || "Post"))){
                     innerAnchor.setAttribute('target','');
                 }
-                innerDiv.htmlContent = "";
+                innerDiv.innerText = "";
                 innerDiv.appendChild(innerAnchor);
                 
                 // var anchor = innerDiv.querySelector('a');
