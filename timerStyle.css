@@ -1,0 +1,37 @@
+.timerDiv{
+    border-radius: 3px;
+    margin-left: 1rem;
+    background-color: rgb(56, 56, 56);
+    align-items: center;
+    height: 2.8vh;
+    box-shadow: rgba(255, 255, 255, 0.4) 0px 0px 0px 1px inset;
+    justify-content: center;
+    display: inline-flex;
+    padding: 0.1vh;
+}
+.timerDiv.Live{
+    border-radius: 3px;
+    margin-left: 1rem;
+    background-color: rgb(244, 67, 54);
+    align-items: center;
+    height: 2.8vh;
+    box-shadow: rgba(255, 255, 255, 0.0) 0px 0px 0px 1px inset;
+    justify-content: center;
+    display: inline-flex;
+    transition: 0.5s;
+}
+a{
+    color: rgb(255,255,255); 
+    text-decoration: none; 
+    cursor: pointer
+}
+.timerDiv.Live:hover{
+    background-color: rgb(255, 17, 0);
+}
+.timer-div {
+    padding: 0.5vw;
+    font-size: 1.8vh;
+    font-weight: bold;
+    font-family: 'Exo 2Variable';
+    text-transform: uppercase;
+}
