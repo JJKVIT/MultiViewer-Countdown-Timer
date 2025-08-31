@@ -1,4 +1,4 @@
-# **CountDown Timer For _Multiviewer App_**(DOES NOT WORK.....REWORKING DUE TO UPDATE USES ASAR FILE)
+# **CountDown Timer For _Multiviewer App_**(DOES NOT WORK.....REWORKING DUE TO UPDATE USING ASAR FILE)
 
 ## Description
 This is a simple (100% overcomplicated and the worst implementation possible for this) modification that can be added to the multiviewer application that adds a countdown timer to visualize the upcoming events with a live button to access the live events. It also makes the weekend elements header sticky so as you scroll you can still see the timer or live button.
